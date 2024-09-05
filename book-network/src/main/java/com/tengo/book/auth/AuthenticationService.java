@@ -9,6 +9,8 @@ import com.tengo.book.user.TokenRepository;
 import com.tengo.book.user.User;
 import com.tengo.book.user.UserRepository;
 import jakarta.mail.MessagingException;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -57,7 +59,10 @@ public class AuthenticationService {
         sendValidationEmail(user);
     }
 
-    public AuthenticationResponse authenticate(AuthenticationRequest authenticationRequest) {
+    public AuthenticationResponse authenticate(
+            AuthenticationRequest authenticationRequest,
+            HttpServletResponse response
+    ) {
         var auth = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         authenticationRequest.getEmail(),
@@ -70,10 +75,21 @@ public class AuthenticationService {
         claims.put("fullname", user.fullname());
 
         var jwtToken = jwtService.generateToken(claims, user);
+
+        // Create the cookie and set its properties
+        Cookie jwtCookie = new Cookie("JWT", jwtToken);
+        jwtCookie.setHttpOnly(true);  // Prevent JavaScript access
+        jwtCookie.setSecure(true);    // Send cookie only over HTTPS
+        jwtCookie.setPath("/");
+        jwtCookie.setMaxAge(7 * 24 * 60 * 60); // 7 days
+        jwtCookie.setDomain("yourdomain.com"); // Optional: set your domain
+//        jwtCookie.setSameSite("Strict"); // Strict or Lax, depending on your requirements
+        response.addCookie(jwtCookie);
+
         return AuthenticationResponse.builder().token(jwtToken).build();
     }
 
-//    @Transactional
+    //    @Transactional
     public void activateAccount(String token) throws MessagingException {
         Token savedToken = tokenRepository.findByToken(token)
                 //todo: handle exception

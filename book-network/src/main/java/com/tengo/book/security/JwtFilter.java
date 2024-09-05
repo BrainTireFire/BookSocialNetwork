@@ -6,7 +6,6 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpHeaders;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -37,23 +36,24 @@ public class JwtFilter extends OncePerRequestFilter {
             return;
         }
 
-//        Cookie jwtCookie = WebUtils.getCookie(request, "JWT");
-        final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
-        final String jwt;
-        final String userEmail;
-
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+        Cookie jwtCookie = WebUtils.getCookie(request, "JWT");
+        if (jwtCookie == null) {
             filterChain.doFilter(request, response);
             return;
         }
-        jwt = authHeader.substring(7);
-        userEmail = jwtService.extractUsername(jwt);
 
-//        if (jwtCookie == null) {
+        String jwt = jwtCookie.getValue();
+        String userEmail = jwtService.extractUsername(jwt);
+
+//        final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+//        final String jwt;
+//        final String userEmail;
+//
+//        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
 //            filterChain.doFilter(request, response);
 //            return;
 //        }
-//        jwt = jwtCookie.getValue();
+//        jwt = authHeader.substring(7);
 //        userEmail = jwtService.extractUsername(jwt);
 
         if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
