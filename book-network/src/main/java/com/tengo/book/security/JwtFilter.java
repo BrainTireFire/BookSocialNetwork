@@ -37,7 +37,6 @@ public class JwtFilter extends OncePerRequestFilter {
             return;
         }
 
-//        Cookie jwtCookie = WebUtils.getCookie(request, "JWT");
         final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
         final String jwt;
         final String userEmail;
@@ -48,13 +47,6 @@ public class JwtFilter extends OncePerRequestFilter {
         }
         jwt = authHeader.substring(7);
         userEmail = jwtService.extractUsername(jwt);
-
-//        if (jwtCookie == null) {
-//            filterChain.doFilter(request, response);
-//            return;
-//        }
-//        jwt = jwtCookie.getValue();
-//        userEmail = jwtService.extractUsername(jwt);
 
         if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = userDetailsService.loadUserByUsername(userEmail);

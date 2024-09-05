@@ -2,6 +2,7 @@ package com.tengo.book.auth;
 
 import com.tengo.book.email.EmailService;
 import com.tengo.book.email.EmailTemplateName;
+import com.tengo.book.exception.OperationNotPermittedException;
 import com.tengo.book.role.RoleRepository;
 import com.tengo.book.security.JwtService;
 import com.tengo.book.user.Token;
@@ -9,6 +10,7 @@ import com.tengo.book.user.TokenRepository;
 import com.tengo.book.user.User;
 import com.tengo.book.user.UserRepository;
 import jakarta.mail.MessagingException;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -40,8 +42,7 @@ public class AuthenticationService {
 
     public void register(RegistrationRequest registrationRequest) throws MessagingException {
         var userRole = roleRepository.findByName("USER")
-                //todo: handle exception
-                .orElseThrow(() -> new IllegalStateException("Role not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Role not found"));
 
         var user = User.builder()
                 .firstname(registrationRequest.getFirstname())
@@ -76,11 +77,11 @@ public class AuthenticationService {
 //    @Transactional
     public void activateAccount(String token) throws MessagingException {
         Token savedToken = tokenRepository.findByToken(token)
-                //todo: handle exception
-                .orElseThrow(() -> new RuntimeException("Invalid token"));
+                .orElseThrow(() -> new OperationNotPermittedException("Invalid token"));
+
         if (LocalDateTime.now().isAfter(savedToken.getExpiresAt())) {
             sendValidationEmail(savedToken.getUser());
-            throw new RuntimeException("Activation token has expired. A new token has been sent to your email");
+            throw new OperationNotPermittedException("Activation token has expired. A new token has been sent to your email");
         }
 
         var user = userRepository.findById(savedToken.getUser().getId())
