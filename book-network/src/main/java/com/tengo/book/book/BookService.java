@@ -5,6 +5,9 @@ import com.tengo.book.exception.OperationNotPermittedException;
 import com.tengo.book.file.FileStorageService;
 import com.tengo.book.history.BookTransactionHistory;
 import com.tengo.book.history.BookTransactionHistoryRepository;
+import com.tengo.book.notification.Notification;
+import com.tengo.book.notification.NotificationService;
+import com.tengo.book.notification.NotificationStatus;
 import com.tengo.book.user.User;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +31,7 @@ public class BookService {
     private final BookRepository bookRepository;
     private final BookTransactionHistoryRepository transactionHistoryRepository;
     private final FileStorageService fileStorageService;
+    private final NotificationService notificationService;
 
     public Integer saveBook(BookRequest bookRequest, Authentication connectUser) {
         User user = getAuthenticatedUser(connectUser);
@@ -96,7 +100,16 @@ public class BookService {
                 .returnApproved(false)
                 .build();
 
-        return transactionHistoryRepository.save(transaction).getId();
+        var saved = transactionHistoryRepository.save(transaction);
+        notificationService.sendNotification(
+                book.getCreatedBy().toString(),
+                Notification.builder()
+                        .status(NotificationStatus.BORROWED)
+                        .message("Your book " + book.getTitle() + " has been borrowed by " + user.getUsername())
+                        .bookTitle(book.getTitle())
+                        .build()
+        );
+        return saved.getId();
     }
 
     public Integer returnBorrowBook(Integer bookId, Authentication connectUser) {
@@ -108,7 +121,17 @@ public class BookService {
                 .orElseThrow(() -> new OperationNotPermittedException("You have not borrowed this book"));
 
         transaction.setReturned(true);
-        return transactionHistoryRepository.save(transaction).getId();
+
+        var saved = transactionHistoryRepository.save(transaction);
+        notificationService.sendNotification(
+                book.getCreatedBy(),
+                Notification.builder()
+                        .status(NotificationStatus.RETURNED)
+                        .message("Your book " + book.getTitle() + " has been returned by " + user.getUsername())
+                        .bookTitle(book.getTitle())
+                        .build()
+        );
+        return saved.getId();
     }
 
     public Integer approveReturnBorrowBook(Integer bookId, Authentication connectUser) {
@@ -120,7 +143,17 @@ public class BookService {
                 .orElseThrow(() -> new OperationNotPermittedException("You have not borrowed this book"));
 
         transaction.setReturnApproved(true);
-        return transactionHistoryRepository.save(transaction).getId();
+
+        var saved = transactionHistoryRepository.save(transaction);
+        notificationService.sendNotification(
+                transaction.getCreatedBy(),
+                Notification.builder()
+                        .status(NotificationStatus.RETURN_APPROVED)
+                        .message("Your book " + book.getTitle() + " has been approved")
+                        .bookTitle(book.getTitle())
+                        .build()
+        );
+        return saved.getId();
     }
 
     // Helper methods for common actions
