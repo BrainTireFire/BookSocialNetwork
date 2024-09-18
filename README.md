@@ -12,3 +12,4 @@ Java spring boot 3 with angular traning tutorial.
 - JSR-303 and Spring Validation
 - OpenAPI and Swagger UI Documentation
 - Docker
+- Websockets
