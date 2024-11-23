@@ -12,16 +12,16 @@ import org.springframework.security.core.Authentication;
 @RequestMapping("feedbacks")
 @RequiredArgsConstructor
 @Tag(name = "FeedBack", description = "FeedBack API")
-public class FeedBackController {
+public class FeedbackController {
 
-    private final FeedBackService feedBackService;
+    private final FeedbackServiceImpl feedbackServiceImpl;
 
     @PostMapping
     public ResponseEntity<Integer> saveFeedBack(
             @RequestBody @Valid FeedbackRequest feedBackRequest,
             Authentication connectUser
     ) {
-        return ResponseEntity.ok(feedBackService.save(feedBackRequest, connectUser));
+        return ResponseEntity.ok(feedbackServiceImpl.save(feedBackRequest, connectUser));
     }
 
     @GetMapping("/book/{book-id}")
@@ -31,6 +31,6 @@ public class FeedBackController {
             @RequestParam(name = "size", defaultValue = "10", required = false) int size,
             Authentication connectUser
     ) {
-        return ResponseEntity.ok(feedBackService.findAllFeedbackByBook(bookId, page, size, connectUser));
+        return ResponseEntity.ok(feedbackServiceImpl.findAllFeedbackByBook(bookId, page, size, connectUser));
     }
 }
