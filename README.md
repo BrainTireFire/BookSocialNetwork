@@ -13,3 +13,4 @@ Java spring boot 3 with angular traning tutorial.
 - OpenAPI and Swagger UI Documentation
 - Docker
 - Websockets
+- Tests
