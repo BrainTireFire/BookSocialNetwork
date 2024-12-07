@@ -1,16 +1,28 @@
-# Book Social Network
+# Book Social Network  
 
-## Description
-Java spring boot 3 with angular traning tutorial.
+## 📖 Overview  
+**Book Social Network** is a training tutorial project that demonstrates the implementation of a social network platform for book lovers. It uses **Java Spring Boot 3** for the backend and **Angular** for the frontend, with a focus on modern development practices and best coding principles.  
 
-## Technologies
-### Backend
-- Spring Boot 3
-- Spring Security 6
-- JWT Token Authentication
-- Spring Data JPA
-- JSR-303 and Spring Validation
-- OpenAPI and Swagger UI Documentation
-- Docker
-- Websockets
-- Tests
+---
+
+## 🛠️ Tech Stack  
+
+### Backend  
+- **Spring Boot 3**: A framework for building robust and scalable backend applications.  
+- **Spring Security 6**: Provides authentication and authorization mechanisms.  
+- **JWT Token Authentication**: For secure and stateless user sessions.  
+- **Spring Data JPA**: Simplifies database access and ORM integration.  
+- **JSR-303 and Spring Validation**: For data validation.  
+- **OpenAPI and Swagger UI**: For API documentation and testing.  
+- **Docker**: To containerize and deploy the application.  
+- **Websockets**: For real-time features such as messaging or notifications.  
+- **Tests**: Backend test cases to ensure reliability and robustness.  
+
+---
+
+## ✨ Features  
+- **User Authentication**: Secure user login and registration with JWT.  
+- **Real-Time Communication**: WebSocket support for features like live notifications.  
+- **Book Management**: CRUD operations for managing books and user interactions.  
+- **OpenAPI Documentation**: Accessible API documentation with Swagger UI.  
+- **Containerized Deployment**: Easily run the project with Docker. 
