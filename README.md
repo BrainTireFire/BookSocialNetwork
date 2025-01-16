@@ -1,7 +1,9 @@
 # Book Social Network  
 
 ## 📖 Overview  
-**Book Social Network** is a training tutorial project that demonstrates the implementation of a social network platform for book lovers. It uses **Java Spring Boot 3** for the backend and **Angular** for the frontend, with a focus on modern development practices and best coding principles.  
+**Book Social Network** is a training tutorial project that demonstrates the implementation of a social network platform for book lovers. It uses **Java Spring Boot 3** for the backend and **Angular** for the frontend, with a focus on modern development practices and best coding principles.
+
+This project is inspired by a course created by **Bouali Ali**. You can find more information and resources about the course on his YouTube channel [Bouali Ali](https://www.youtube.com/@BoualiAli), where he dives deep into the development and architecture of such systems.
 
 ---
 
